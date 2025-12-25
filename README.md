@@ -1,4 +1,4 @@
 # ai-partner-catalyst project idea
-Name:
+Name: <br>
 What it does:
 - bro
