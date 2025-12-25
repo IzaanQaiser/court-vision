@@ -6,15 +6,15 @@
 
 ## 1. Problem Statement
 
-Watching NBA games live, fans experience rapid swings (runs, foul trouble, hot shooting) but **cannot tell why they’re happening** or whether they’re meaningful.
+Watching NBA games live, fans experience rapid swings (runs, foul trouble, hot shooting) but **cannot tell why they’re happening*- or whether they’re meaningful.
 
 Existing solutions fail:
 
-* **Box score / win probability** → descriptive, not explanatory
-* **Commentary / Twitter** → subjective, emotional, often wrong
-* **“AI predictors”** → opaque, unverifiable, low trust
+- **Box score / win probability*- → descriptive, not explanatory
+- **Commentary / Twitter*- → subjective, emotional, often wrong
+- **“AI predictors”*- → opaque, unverifiable, low trust
 
-Users lack **real-time, evidence-backed understanding** of game events.
+Users lack **real-time, evidence-backed understanding*- of game events.
 
 ---
 
@@ -22,14 +22,15 @@ Users lack **real-time, evidence-backed understanding** of game events.
 
 Create a real-time companion that:
 
-* Detects meaningful in-game events
-* Lets users *track* those events as they unfold
-* Explains **what is happening and why**, using only data
-* Clearly distinguishes **signal vs variance**
-* Uses AI **only as a narrator**, never as a guesser
+  - Detects meaningful in-game events
+    - explains why that event is meaningful (expected vs actual)
+  - Lets users *track- those events as they unfold in real time
+  - Explains **what is happening and why**, using only data
+  - Tells you whether what you’re seeing is expected or just a fluke
+  - Uses AI **only as a narrator**, never as a guesser
 
-The app does not predict outcomes.
-It **explains reality**.
+The app does **not predict outcomes.**
+It **explains what's going on**.
 
 ---
 
@@ -39,23 +40,13 @@ It **explains reality**.
 
 1. **Hardcore NBA fans**
 
-   * Watch full games
-   * Want deeper understanding, not more stats
+   - Watch full games
+   - Want deeper understanding, not more stats
 
-2. **Sports bettors**
+2. **Basketball content creators / analysts**
 
-   * Need to know whether runs are sustainable or noise
-   * Use second screens during games
-
-3. **Basketball content creators / analysts**
-
-   * Need defensible real-time insights
-   * Want to follow and narrate game storylines
-
-### Secondary
-
-* Curious fans learning basketball concepts
-* Amateur coaches / players
+   - Need defensible real-time insights
+   - Want to follow and narrate game storylines
 
 ---
 
@@ -64,11 +55,10 @@ It **explains reality**.
 **“We turn live NBA games into understandable stories, backed by numbers.”**
 
 Concrete value:
-
-* Reduces emotional overreaction
-* Identifies whether events are process-driven or luck-driven
-* Builds trust in AI through evidence gating
-* Makes watching games smarter, not noisier
+- Reduces emotional overreaction
+- Identifies whether events are process-driven or luck-driven
+- Builds trust in AI through evidence gating
+- Makes watching games smarter, not noisier
 
 ---
 
@@ -78,13 +68,13 @@ Concrete value:
 2. App detects an event (e.g., 12–2 run)
 3. User taps **“Track Event”**
 4. App opens an Event View that:
-
-   * Continuously updates metrics
-   * Shows AI explanation with cited evidence
-   * Labels event as **structural** or **variance-driven**
+  - explains why the event is meaningful (expected vs actual)
+   - Continuously updates metrics
+   - Shows AI explanation with cited evidence
+   - Labels event as **structural*- or **variance-driven**
 5. User asks follow-up questions via event-scoped chat
 6. Event resolves (run ends, fouls stabilize, shooting regresses)
-7. User understands *why* it happened
+7. User understands *why- it happened
 
 ---
 
@@ -96,10 +86,10 @@ The system detects events using live data.
 
 Initial supported events (MVP):
 
-* Scoring runs (≥ 8–0 within ≤ 3 minutes)
-* Turnover spikes (≥ 3 TOV in 5 possessions)
-* Foul parades (≥ 6 FTA in 3 minutes)
-* Hot / cold shooting (actual − expected ≥ ±6 pts over last 10 shots)
+- Scoring runs (≥ 8–0 within ≤ 3 minutes)
+- Turnover spikes (≥ 3 TOV in 5 possessions)
+- Foul parades (≥ 6 FTA in 3 minutes)
+- Hot / cold shooting (actual − expected ≥ ±6 pts over last 10 shots)
 
 Each detection creates a unique `event_id`.
 
@@ -111,15 +101,15 @@ Users can “track” an event.
 
 Tracked events:
 
-* Persist as live objects
-* Update metrics every possession
-* Maintain a timeline from event start → end
+- Persist as live objects
+- Update metrics every possession
+- Maintain a timeline from event start → end
 
 Each tracked event has:
 
-* Start time and trigger condition
-* Rolling metrics since start
-* AI explanations that refresh as evidence changes
+- Start time and trigger condition
+- Rolling metrics since start
+- AI explanations that refresh as evidence changes
 
 ---
 
@@ -129,12 +119,12 @@ For each tracked event, display:
 
 Metrics (updated live):
 
-* Shot quality: expected vs actual points
-* Turnover rate and points off turnovers
-* Free-throw rate
-* Shot mix (rim / mid / 3)
-* Pace proxy
-* Possessions gained/lost
+- Shot quality: expected vs actual points
+- Turnover rate and points off turnovers
+- Free-throw rate
+- Shot mix (rim / mid / 3)
+- Pace proxy
+- Possessions gained/lost
 
 This answers:
 **What measurable forces are driving this event?**
@@ -145,14 +135,14 @@ This answers:
 
 Each event is continuously labeled:
 
-* **Structural (process-driven)**
-* **Variance-driven (luck-based)**
-* **Mixed / unclear**
+- **Structural (process-driven)**
+- **Variance-driven (luck-based)**
+- **Mixed / unclear**
 
 Logic:
 
-* Structural → improvements in xPts, rim pressure, FTs, possession advantage
-* Variance → large actual − expected gaps with no process change
+- Structural → improvements in xPts, rim pressure, FTs, possession advantage
+- Variance → large actual − expected gaps with no process change
 
 This is one of the highest-value features for users.
 
@@ -164,18 +154,18 @@ AI generates explanations with strict rules:
 
 Output includes:
 
-* Headline (≤ 12 words)
-* 2–3 sentence explanation
-* Evidence list (metrics + values)
-* Confidence score
-* Limits (what this does *not* prove)
+- Headline (≤ 12 words)
+- 2–3 sentence explanation
+- Evidence list (metrics + values)
+- Confidence score
+- Limits (what this does *not- prove)
 
 Hard constraints:
 
-* AI only sees a structured **Evidence Packet**
-* Every claim must cite metrics
-* No speculation, intent, or predictions
-* If evidence is insufficient → AI must say so
+- AI only sees a structured **Evidence Packet**
+- Every claim must cite metrics
+- No speculation, intent, or predictions
+- If evidence is insufficient → AI must say so
 
 ---
 
@@ -183,15 +173,15 @@ Hard constraints:
 
 Users can ask questions about a tracked event:
 
-* “Why is this run continuing?”
-* “What would make this stop?”
-* “Is this normal historically?”
+- “Why is this run continuing?”
+- “What would make this stop?”
+- “Is this normal historically?”
 
 Constraints:
 
-* Chat is locked to one event
-* AI can only reference that event’s metrics
-* If data doesn’t support an answer → “Insufficient evidence”
+- Chat is locked to one event
+- AI can only reference that event’s metrics
+- If data doesn’t support an answer → “Insufficient evidence”
 
 This builds trust and educational value.
 
@@ -201,17 +191,17 @@ This builds trust and educational value.
 
 Primary data provider:
 
-* **Sportradar NBA real-time API**
+- **Sportradar NBA real-time API**
 
-  * Play-by-play
-  * Shots
-  * Fouls
-  * Game state
+  - Play-by-play
+  - Shots
+  - Fouls
+  - Game state
 
 Initial mode:
 
-* Replay Mode using completed games
-* Optional live mode using trial access
+- Replay Mode using completed games
+- Optional live mode using trial access
 
 ---
 
@@ -219,22 +209,22 @@ Initial mode:
 
 ### 8.1 Shot Quality / Expected Points Model
 
-* Input: shot location bucket, shot type, clock, score margin, assist flag
-* Output: expected points per shot
-* Used to compute variance vs process
+- Input: shot location bucket, shot type, clock, score margin, assist flag
+- Output: expected points per shot
+- Used to compute variance vs process
 
 Model type:
 
-* Logistic regression or gradient boosting (v1)
+- Logistic regression or gradient boosting (v1)
 
 ---
 
-### 8.2 AI Explanation (Vertex AI Gemini)
+### 8.2 AI Explanation (Vertex AI/Gemini)
 
-* Gemini used strictly for **language generation**
-* Never for raw analysis
-* Prompt enforces schema and citations
-* Output validated server-side before display
+- Gemini used strictly for **language generation**
+- Never for raw analysis
+- Prompt enforces schema and citations
+- Output validated server-side before display
 
 ---
 
@@ -242,22 +232,22 @@ Model type:
 
 ### Event Streaming
 
-* Sportradar → Ingest Service → Confluent topics
+- Sportradar → Ingest Service → Confluent topics
 
 Key topics:
 
-* `pbp.raw`
-* `pbp.normalized`
-* `events.detected`
-* `events.tracked`
-* `events.metrics`
-* `events.explanations`
+- `pbp.raw`
+- `pbp.normalized`
+- `events.detected`
+- `events.tracked`
+- `events.metrics`
+- `events.explanations`
 
 ### Stream Processing
 
-* Rolling windows via ksqlDB / Flink
-* Event detection + metric aggregation
-* Updates published continuously
+- Rolling windows via ksqlDB / Flink
+- Event detection + metric aggregation
+- Updates published continuously
 
 This directly aligns with “data in motion” requirements.
 
@@ -265,31 +255,31 @@ This directly aligns with “data in motion” requirements.
 
 ## 10. Platform Architecture (GCP)
 
-* **Cloud Run**
+- **Cloud Run**
 
-  * Ingest service
-  * Event API
-  * Explainer service
-  * Chat service
+  - Ingest service
+  - Event API
+  - Explainer service
+  - Chat service
 
-* **Firestore**
+- **Firestore**
 
-  * Event state
-  * Timelines
-  * Explanations
+  - Event state
+  - Timelines
+  - Explanations
 
-* **Vertex AI**
+- **Vertex AI**
 
-  * Gemini API
-  * Optional ML model hosting
+  - Gemini API
+  - Optional ML model hosting
 
-* **Secret Manager**
+- **Secret Manager**
 
-  * API keys and credentials
+  - API keys and credentials
 
-* **Cloud Storage**
+- **Cloud Storage**
 
-  * Replay files, logs
+  - Replay files, logs
 
 ---
 
@@ -297,19 +287,19 @@ This directly aligns with “data in motion” requirements.
 
 Included:
 
-* Replay Mode (1 full game)
-* Scoring runs + foul events
-* Shot quality baseline
-* Event tracking
-* AI explainer with receipts
-* Single-page web UI
+- Replay Mode (1 full game)
+- Scoring runs + foul events
+- Shot quality baseline
+- Event tracking
+- AI explainer with receipts
+- Single-page web UI
 
 Excluded:
 
-* Player tracking data
-* Coaching simulations
-* Outcome prediction
-* Multi-game dashboards
+- Player tracking data
+- Coaching simulations
+- Outcome prediction
+- Multi-game dashboards
 
 ---
 
@@ -317,34 +307,24 @@ Excluded:
 
 ### User-level
 
-* Users keep app open during full games
-* Users track at least one event per game
-* Users ask follow-up questions
+- Users keep app open during full games
+- Users track at least one event per game
+- Users ask follow-up questions
 
 ### Product-level
 
-* AI explanations always cite data
-* No hallucinated claims
-* Events correctly classified as real vs variance
+- AI explanations always cite data
+- No hallucinated claims
+- Events correctly classified as real vs variance
 
 ### Demo-level (hackathon)
 
-* Judges understand value in < 30 seconds
-* Live or replay demo clearly shows event evolution
-* AI explanations feel trustworthy, not magical
+- Judges understand value in < 30 seconds
+- Live or replay demo clearly shows event evolution
+- AI explanations feel trustworthy, not magical
 
 ---
 
 ## 13. One-Sentence Summary
 
 **A real-time NBA companion that lets fans track live game events and understand what’s actually happening, using AI explanations backed strictly by data.**
-
----
-
-If you want next, I can:
-
-* Turn this into a **technical PRD**
-* Write the **exact schemas**
-* Or map each PRD section to **tasks + tickets**
-
-Just say which.
