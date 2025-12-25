@@ -1,0 +1,23 @@
+{
+  "name": "court-vision",
+  "version": "1.0.0",
+  "description": "## Court Vision",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izaanqaiser/court-vision.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/izaanqaiser/court-vision/issues"
+  },
+  "homepage": "https://github.com/izaanqaiser/court-vision#readme"
+}
