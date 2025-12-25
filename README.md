@@ -1,2 +1,4 @@
-# ai-partner-catalyst
-Repository for Google Cloud AI Partner Catalyst Hackathon
+# ai-partner-catalyst project idea
+Name:
+What it does:
+- 
