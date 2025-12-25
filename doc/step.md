@@ -1,13 +1,13 @@
 - **Phase 0 — Lock scope + “definition of done” (half day)**
 
-  - Pick **1 replay game*- (JSON file) and freeze the MVP events: **(A) scoring runs, (B) foul parade**.
-  - Freeze the **Evidence Packet schema*- (what AI is allowed to see) + the **Explainer output schema*- (headline, 2–3 sentences, evidence list, confidence, limits).
+  - Pick **1 replay game** (JSON file) and freeze the MVP events: **(A) scoring runs, (B) foul parade**.
+  - Freeze the **Evidence Packet schema** (what AI is allowed to see) + the **Explainer output schema** (headline, 2–3 sentences, evidence list, confidence, limits).
   - Write 10–15 concrete acceptance tests (ex: “8–0 in ≤3:00 produces `event_id`, start_time, trigger_condition, and metrics update every possession”).
 
 - **Phase 1 — Data foundation (Replay Ingest → Normalized PBP)**
 
   1. Get Sportradar sample / trial OR use exported replay JSON.
-  2. Build **Ingest Service*- (Cloud Run): reads replay file, emits events in time order.
+  2. Build **Ingest Service** (Cloud Run): reads replay file, emits events in time order.
   3. Define **canonical normalized events**:
 
      - possession_start/end, shot_attempt(made/miss + location bucket), foul(FTA count), turnover, rebound, score_update, game_clock, team_id.
@@ -19,7 +19,7 @@
 - **Phase 2 — Stream processing backbone (rolling windows + possession state)**
 
   1. Stand up ksqlDB/Flink jobs that consume `pbp.normalized`.
-  2. Build a **possession aggregator*- (critical):
+  2. Build a **possession aggregator** (critical):
 
      - emits `possession.summary` with: team, points, FTA, TOV, shot type, xPts (later), timestamp.
   3. Store minimal game state needed for windows:
@@ -30,20 +30,20 @@
 
   - **Scoring run detector**
 
-    - Rolling window: last **≤3 minutes*- OR last **N possessions*- with clock constraint.
+    - Rolling window: last **≤3 minutes** OR last **N possessions** with clock constraint.
     - Trigger when one team scores **≥8 unanswered**.
     - Emit `events.detected` with `event_id`, type, start_time, end_time=null, trigger_condition, teams, window context.
   - **Foul parade detector**
 
     - Rolling: last **3 minutes**.
-    - Trigger when team attempts **≥6 FTA*- in window.
-  - Add **dedupe + cooldown*- logic so you don’t spam events:
+    - Trigger when team attempts **≥6 FTA** in window.
+  - Add **dedupe + cooldown** logic so you don’t spam events:
 
     - “same event continues” vs “new event”.
 
 - **Phase 4 — Event tracking + timeline state (Firestore + topics)**
 
-  1. Create **Event API*- (Cloud Run):
+  1. Create **Event API** (Cloud Run):
 
      - `POST /track` (user tracks `event_id`)
      - `GET /event/:id` (live state)
@@ -59,19 +59,19 @@
 
 - **Phase 5 — Metrics engine (Evidence Dashboard)**
 
-  - Build an `events.metrics` producer that updates **every possession*- while event is active:
+  - Build an `events.metrics` producer that updates **every possession** while event is active:
 
-    - **Actual vs Expected points*- (needs xPts model in Phase 6)
+    - **Actual vs Expected points** (needs xPts model in Phase 6)
     - **FT rate**: FTA per possession
     - **TOV rate**
     - **Shot mix**: rim/mid/3 counts + shares
-    - **Possessions gained/lost*- proxy: TOV differential + OREB (if you track)
+    - **Possessions gained/lost** proxy: TOV differential + OREB (if you track)
     - **Pace proxy**: possessions per minute during event window
   - Emit `events.metrics` (and persist latest + timeline).
 
 - **Phase 6 — Shot quality / expected points (baseline first, then model)**
 
-  1. Start with a **baseline table*- (fast):
+  1. Start with a **baseline table** (fast):
 
      - xPts by shot bucket (rim/mid/3) + assist flag if available.
   2. Then replace with v1 model:
@@ -89,7 +89,7 @@
   - Implement a transparent rule-based scorer (MVP):
 
     - Structural signals: **xPts up**, **FT rate up**, **TOV advantage**, **rim pressure up**
-    - Variance signals: **(actual − expected) big*- with no change in process signals
+    - Variance signals: **(actual − expected) big** with no change in process signals
   - Output:
 
     - `label ∈ {STRUCTURAL, VARIANCE, MIXED}`
@@ -98,10 +98,10 @@
 
 - **Phase 8 — Evidence Packet + AI explainer (gated + validated)**
 
-  1. Define **Evidence Packet*- JSON (only numbers + allowed context):
+  1. Define **Evidence Packet** JSON (only numbers + allowed context):
 
      - event type, teams, time range, rolling metrics, deltas vs pre-event baseline, label, and “uncertainty flags”.
-  2. Build **Explainer Service*- (Cloud Run):
+  2. Build **Explainer Service** (Cloud Run):
 
      - consumes `events.metrics`
      - constructs Evidence Packet
@@ -119,7 +119,7 @@
      - `POST /event/:id/chat`
   2. Retrieval:
 
-     - only pull **that event’s*- latest Evidence Packet + timeline summaries.
+     - only pull **that event’s** latest Evidence Packet + timeline summaries.
   3. Hard constraints:
 
      - no predictions
@@ -130,7 +130,7 @@
   - Pages/components:
 
     - **Game View**: list of detected events in time order (live feed)
-    - **Event View*- (core): dashboard metrics, label, explainer, timeline chart, chat box
+    - **Event View** (core): dashboard metrics, label, explainer, timeline chart, chat box
   - UX details that matter:
 
     - “Track Event” button
