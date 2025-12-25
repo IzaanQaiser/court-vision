@@ -1,0 +1,4 @@
+made a cluster in confluent cloud and added 5 topics to it (pbp.raw, pbp.normalised, events.detected, events.metrics, events.explanation)
+    - the app is a factory that turns raw NBA data into explanations
+        - each topic is a conveyer belt that takes raw data from the sportradar API and then turns it into an explanation using our services then passes it on to the next conveyer belt or passes it on to the application
+            - e.g. pbp.raw takes in raw NBA events from the sportradar ingestor (e.g. Curry made a 3pt shot at 9:42 left in Q2) -> pbp.normalised takes pbp.raw and cleans it -> etc
