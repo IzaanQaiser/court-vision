@@ -9,6 +9,7 @@
   "scripts": {
     "consume:test": "node scripts/consume-test.js",
     "produce:test": "node scripts/produce-test.js",
+    "sportradar:schedule": "node scripts/sportradar-schedule.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
