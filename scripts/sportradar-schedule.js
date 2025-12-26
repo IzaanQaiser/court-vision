@@ -48,6 +48,18 @@ function fetchJson(url, headers) {
   });
 }
 
+async function fetchJsonWithRetry(url, headers, retries = 1, retryDelayMs = 1000) {
+  try {
+    return await fetchJson(url, headers);
+  } catch (err) {
+    if (retries <= 0) {
+      throw err;
+    }
+    await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+    return fetchJsonWithRetry(url, headers, retries - 1, retryDelayMs);
+  }
+}
+
 function sortByScheduledDesc(games) {
   return [...games].sort((a, b) => {
     const aTime = Date.parse(a.scheduled || 0);
@@ -72,11 +84,15 @@ function formatGameLine(game, summary, timeZone) {
   const awayLabel = away;
   const homeLabel = home;
 
-  const status = summary?.game?.status || summary?.status || game.status;
+  const statusRaw = summary?.game?.status || summary?.status || game.status;
+  const status = statusRaw ? String(statusRaw).toLowerCase() : "unknown";
   const awayPoints = getTeamPoints(summary, "away", game);
   const homePoints = getTeamPoints(summary, "home", game);
+  const showScore = ["inprogress", "halftime", "closed", "complete"].includes(
+    status
+  );
   const hasScore =
-    status !== "scheduled" &&
+    showScore &&
     typeof awayPoints === "number" &&
     typeof homePoints === "number";
   const score = hasScore ? `${awayPoints}-${homePoints}` : "N/A";
@@ -97,6 +113,8 @@ function formatGameLine(game, summary, timeZone) {
   const isInProgress = status === "inprogress";
 
   const scoreLabel = isFinal ? `${score} Final` : score;
+  const tipoffLabel =
+    status === "created" && date ? formatTipoffCountdown(date) : null;
 
   let periodPart = "";
   if (isInProgress) {
@@ -107,6 +125,10 @@ function formatGameLine(game, summary, timeZone) {
     }
   } else if (isHalftime) {
     periodPart = "Halftime";
+  }
+
+  if (tipoffLabel) {
+    return `${dateStr} | ${timeStr} | ${awayLabel} @ ${homeLabel} | ${tipoffLabel}`;
   }
 
   return periodPart
@@ -142,6 +164,28 @@ function getDateKey(scheduled, timeZone) {
     return "";
   }
   return formatDateInTimeZone(date, timeZone);
+}
+
+function formatTipoffCountdown(scheduledDate) {
+  const now = new Date();
+  const bufferMs = 10 * 60 * 1000;
+  const diffMs = scheduledDate.getTime() + bufferMs - now.getTime();
+  const diffMinutes = Math.max(0, Math.round(diffMs / 60000 / 5) * 5);
+
+  if (diffMinutes === 0) {
+    return "tipoff should be soon";
+  }
+
+  if (diffMinutes < 60) {
+    return `tipoff in ~${diffMinutes} minutes`;
+  }
+
+  const hours = Math.floor(diffMinutes / 60);
+  const minutes = diffMinutes % 60;
+  if (minutes === 0) {
+    return `tipoff in ~${hours} hour${hours === 1 ? "" : "s"}`;
+  }
+  return `tipoff in ~${hours}h ${minutes}m`;
 }
 
 function toNumber(value) {
@@ -190,7 +234,7 @@ async function fetchGameSummary({
 }) {
   const url = `${apiBase}/nba/${accessLevel}/v8/${language}/games/${gameId}/summary.${format}`;
   try {
-    return await fetchJson(url, { "x-api-key": apiKey });
+    return await fetchJsonWithRetry(url, { "x-api-key": apiKey });
   } catch (err) {
     if (debug) {
       console.error(`Summary fetch failed for ${gameId}: ${err.message}`);
@@ -214,7 +258,7 @@ async function run() {
   const debug = getEnv("SPORTRADAR_DEBUG") === "1";
 
   const url = `${apiBase}/nba/${accessLevel}/v8/${language}/games/${seasonYear}/${seasonType}/schedule.${format}`;
-  const data = await fetchJson(url, { "x-api-key": apiKey });
+  const data = await fetchJsonWithRetry(url, { "x-api-key": apiKey });
 
   const games = Array.isArray(data.games) ? data.games : [];
   const dateFilter = filterDate || formatDateInTimeZone(new Date(), timeZone);
